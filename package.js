@@ -1,7 +1,7 @@
 Package.describe({
-	name: 'lukeclifton:shopify-api',
-	summary: 'Package for the Shopify API. Also handles OAuth authentication for embedded Shopify apps built with Meteor',
-	version: '1.0.0',
+	name: 'cliffers:shopify-api',
+	summary: 'Package for the Shopify API. Also handles OAuth authentication for embedded shopify apps',
+	version: '0.1.0',
 	git: 'https://github.com/lukeclifton/shopify-api-meteor'
 });
 
@@ -11,7 +11,7 @@ Package.onUse(function(api) {
 	// Both client and server
 	api.use([
 		'mongo',
-		'iron:router',
+		'iron:router@1.0.7',
 		'accounts-base',
 		'service-configuration',
 	], ['client', 'server']);
@@ -19,8 +19,8 @@ Package.onUse(function(api) {
 	// Client only
 	api.use([
 		'templating',
-		'jparker:crypto-sha256',
-		'jparker:crypto-hmac',
+		'jparker:crypto-sha256@0.1.1',
+		'jparker:crypto-hmac@0.1.0',
 	], 'client');
 
 	// Server only
