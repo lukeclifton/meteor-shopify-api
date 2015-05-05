@@ -11,13 +11,13 @@ Meteor.startup(function() {
 
     // Ensure that all the required package options are set, if not then throw an error
     if (!ShopifyApi.options.hasOwnProperty('shop') || ShopifyApi.options.shop === '') { 
-        throw new Meteor.Error('400', 'Required shop option missing for Shopify API Package');
+        throw new Meteor.Error('400', 'Required shop option missing for Shopify API package');
     }
     if (!ShopifyApi.options.hasOwnProperty('apiKey') || ShopifyApi.options.apiKey === '') { 
-        throw new Meteor.Error('400', 'Required apiKey option missing for Shopify API Package');
+        throw new Meteor.Error('400', 'Required apiKey option missing for Shopify API package');
     }
     if (!ShopifyApi.options.hasOwnProperty('secret') || ShopifyApi.options.secret === '') { 
-        throw new Meteor.Error('400', 'Required secret option missing for Shopify API Package');
+        throw new Meteor.Error('400', 'Required secret option missing for Shopify API package');
     }
 
     // Set up shopify as a oauth external service
@@ -32,11 +32,35 @@ Meteor.startup(function() {
 });
 
 Meteor.methods({
-        
+
+    /* --------------------------------------
+    * Shopify oauth signature validation function
+    * --------------------------------------
+    * Validates the shopify oauth signature according to: 
+    * http://docs.shopify.com/api/authentication/oauth
+    * ------------------------------------*/
+    'shopify/validateSignature': function(params) {
+    
+        var hmac = params.hmac;
+    
+        // Delete signature and hmac as shopify docs specifies
+        delete params.signature;
+        delete params.hmac;
+    
+        // Create message query string
+        var message = serializeObject(params);
+    
+        // Do the hmac sha256 encrypting
+        var hash = CryptoJS.HmacSHA256(message, ShopifyApi.options.secret).toString();
+    
+        // Return true if we have a match, otherwise return false
+        return hash === hmac;
+    },
+
     'shopify/oauth/generateAccessToken': function(code, shop) {
     
         if (!shop || !code) {
-            throw new Meteor.Error('400', 'Cannot generate Shopify access token: shop OR code parameters missing');
+            throw new Meteor.Error('400', 'Shopify app: Cannot generate Shopify access token: shop OR code parameters missing');
         }
     
         this.unblock();
@@ -53,16 +77,11 @@ Meteor.methods({
             
         // Request permanet access token from shopfiy
         var result = HTTP.post(url, { params: data }); 
-            
+        
         if (result.statusCode === 200) {
 
             // Save the new access token to user doc
-            var user = Meteor.call('shopify/updateOrCreateUser', shop, result.data.access_token);
-
-            return user;
-                
-        } else {
-            throw new Meteor.Error('503', 'Shopify authorization failed');
+            return Meteor.call('shopify/updateOrCreateUser', shop, result.data.access_token);   
         }
     },
     
@@ -108,7 +127,7 @@ Meteor.methods({
             apiUrl = 'https://' + shop + endpoint;
     
         if (!shop || !token || !apiUrl) {
-            throw new Meteor.Error('400', 'Missing parameter for Shopify API call');
+            throw new Meteor.Error('400', 'Shopify app: Missing parameter for Shopify API call');
         }
     
         this.unblock();
@@ -145,3 +164,12 @@ Accounts.registerLoginHandler(function(loginRequest) {
         userId: loginRequest.userId,
     };
 });
+
+var serializeObject = function(object) {
+    var string = [];
+    for (var param in object)
+        if (object.hasOwnProperty(param)) {
+            string.push(encodeURIComponent(param) + "=" + encodeURIComponent(object[param]));
+        }
+    return string.join("&");
+}
