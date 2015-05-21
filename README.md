@@ -41,9 +41,7 @@ This override option is useful during app development when developing locally, o
 Passing a shopify shop url into this option will force the app to use this shop for the API and the app won't look for a shop parameter in the url from Shopify. 
 Don't forget to remove this override in production!
 
-## Package Use
-
-#### App Authenication / Login
+## App Authenication / Login
 This package allows your embedded app to login in your shop admin into your app using Shopify OAuth authentication.
 It will create a Meteor user and store the shop credentials and OAuth tokens etc.
 Everytime a shop needs to login the OAuth process / handshake is re-authenicated and a new token is stored. This is recommended by Shopify.
@@ -56,6 +54,7 @@ ShopifyApi.authorizeApp(queryParams);
 
 If your using Iron:router then you can add the login check to a onBeforeAction like so:
 
+```
 /* --------------------------------------
  * Login check
  * --------------------------------------
@@ -74,9 +73,9 @@ Router.onBeforeAction(function() {
 	this.next();
 
 }, { only: ['route1', 'route2', 'etc..'] });
+```
 
-
-#### Using the Shopify API
+## Using the Shopify API
 
 This package gives you a API method for use with all of the Shopify API endpoints.
 
