@@ -2,7 +2,7 @@
 # shopify-api
 
 Meteor JS package for building embedded Shopify apps that use the Shopify API.
-This package handles everything needed to set-up an embedded Shopify app including app authenication / login process and with the Shopify API.
+This package handles everything needed to set-up an embedded Shopify app including OAuth authentication / Meteor login with Shopify process and working with the Shopify API.
 
 This package does not include all of the Shopify API endpoints, you can add your own as required depending on the functionality of your app.
 
@@ -37,7 +37,7 @@ ShopifyApi.init({
 ```
 
 #### shopOverride Option
-This override option is useful during app development when working locally, outside of Shopify admin.
+This override option is useful during app development when developing locally, outside of Shopify admin.
 Passing a shopify shop url into this option will force the app to use this shop for the API and the app won't look for a shop parameter in the url from Shopify. 
 Don't forget to remove this override in production!
 
@@ -76,3 +76,5 @@ Meteor.methods({
 ```
 
 *** Package is still in development ***
+Any questions / improvments, please create an issue.
+
