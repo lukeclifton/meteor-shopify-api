@@ -43,6 +43,37 @@ Don't forget to remove this override in production!
 
 ## Package Use
 
+#### App Authenication / Login
+This package allows your embedded app to login in your shop admin into your app using Shopify OAuth authentication.
+It will create a Meteor user and store the shop credentials and OAuth tokens etc.
+Everytime a shop needs to login the OAuth process / handshake is re-authenicated and a new token is stored. This is recommended by Shopify.
+
+Calling this function runs the login / auth process:
+
+```ShopifyApi.authorizeApp(queryParams);```
+
+If your using Iron:router then you can add the login check to a onBeforeAction like so:
+
+/* --------------------------------------
+ * Login check
+ * --------------------------------------
+ * Using the Iron Router onBeforeAction to check if the user is logged in or not
+ * If not, start the login process
+ * Specify which routes require authenication by adding specific routes to the array in the 'only' param
+ * You can also use 'except' rather than 'only' if you want to exclude certain routes
+ * ------------------------------------*/
+Router.onBeforeAction(function() {
+
+	// If not logged in, handle the shopify OAuth login process before anything else
+	if (!Meteor.userId()) {
+		ShopifyApi.authorizeApp(this.params.query);
+	}
+
+	this.next();
+
+}, { only: ['route1', 'route2', 'etc..'] });
+
+
 #### Using the Shopify API
 
 This package gives you a API method for use with all of the Shopify API endpoints.
