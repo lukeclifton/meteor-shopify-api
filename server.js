@@ -1,18 +1,26 @@
 // Set-up the package options and api endpoints (SERVER)
 ShopifyApi = {
     options: {
-        shop:   '',
         apiKey: '',
         secret: '',
+        shopOverride: false,
     }
 };
+
+/* --------------------------------------
+ * Shopify api init function
+ * --------------------------------------
+ * This function sets up the shopify api options for the server
+ * ------------------------------------*/
+ShopifyApi.init = function(options) {
+
+    // Set passed options
+    ShopifyApi.options = options;
+}
 
 Meteor.startup(function() {
 
     // Ensure that all the required package options are set, if not then throw an error
-    if (!ShopifyApi.options.hasOwnProperty('shop') || ShopifyApi.options.shop === '') { 
-        throw new Meteor.Error('400', 'Required shop option missing for Shopify API package');
-    }
     if (!ShopifyApi.options.hasOwnProperty('apiKey') || ShopifyApi.options.apiKey === '') { 
         throw new Meteor.Error('400', 'Required apiKey option missing for Shopify API package');
     }
@@ -104,13 +112,26 @@ Meteor.methods({
 
     'shopify/user': function() {
 
-        var user = Meteor.users.findOne({ 
-            'services.shopify.shop': ShopifyApi.options.shop 
-        });
+        // Use the shop user override if the option is set
+        if (ShopifyApi.options.shopOverride != false) {
+            var shop = ShopifyApi.options.shopOverride;
+            var selector = { 'services.shopify.shop': shop };
+        } else {
+            // Get the currently logged in user
+            var currentUserId = Meteor.userId();
+            var selector = { _id: currentUserId };
+        }
 
-        return {
-            shop: user.services.shopify.shop,
-            token: user.services.shopify.accessToken
+        // Get all user data
+        var user = Meteor.users.findOne(selector);
+
+        if (user) {
+            return {
+                shop: user.services.shopify.shop,
+                token: user.services.shopify.accessToken
+            }
+        } else {
+            throw new Error('Shopify app: No shopify user set');
         }
     },
 
