@@ -14,9 +14,9 @@ This package does not include all of the Shopify API endpoints, you can add your
 meteor add cliffers:shopify-api
 ```
 
-#### Package Init
+## Package Init
 
-##### Client Init
+#### Client Init
 ```
 // Setup Shopify API options for client
 ShopifyApi.init({
@@ -26,7 +26,7 @@ ShopifyApi.init({
     shopOverride: 	'shop-name.myshopify.com' 	// See 'shopOverride Option' section below (default is false)
 ```
 
-##### Server Init
+#### Server Init
 ```
 // Setup Shopify API options for server
 ShopifyApi.init({
@@ -36,14 +36,14 @@ ShopifyApi.init({
 });
 ```
 
-##### shopOverride Option
+#### shopOverride Option
 This override option is useful during app development when working locally, outside of Shopify admin.
 Passing a shopify shop url into this option will force the app to use this shop for the API and the app won't look for a shop parameter in the url from Shopify. 
 Don't forget to remove this override in production!
 
-#### Package Use
+## Package Use
 
-##### Using the Shopify API
+#### Using the Shopify API
 
 This package gives you a API method for use with all of the Shopify API endpoints.
 
