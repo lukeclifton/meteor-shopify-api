@@ -50,7 +50,9 @@ Everytime a shop needs to login the OAuth process / handshake is re-authenicated
 
 Calling this function runs the login / auth process:
 
-```ShopifyApi.authorizeApp(queryParams);```
+```
+ShopifyApi.authorizeApp(queryParams);
+```
 
 If your using Iron:router then you can add the login check to a onBeforeAction like so:
 
