@@ -6,7 +6,6 @@ ShopifyApi = {
         apiKey: '',
         scopes: '',
         authSuccessRoute: '',
-        shopOverride: false,
     }
 };
 
@@ -18,20 +17,19 @@ ShopifyApi = {
 ShopifyApi.init = function(options) {
 
 	// Set passed options
-	ShopifyApi.options = options;
+	_.extend(ShopifyApi.options, options);
 
-	if (ShopifyApi.options.shopOverride != false) {
-		ShopifyApi.options.shop = ShopifyApi.options.shopOverride;
-	} else {
-		// Get the shop param
-		var shop = urlParams().shop;
+	// If the shop option has been manually set in options then return
+	if (ShopifyApi.options.shop) return;
+
+	// Otherwise we need to get and set the shop param from url
+	var shop = urlParams().shop;
 	
-		// Check we have a shop param and set the option
-		if (shop) {
-			ShopifyApi.options.shop = shop;
-		} else {
-			handleError('Cannot detect Shopify shop');
-		}
+	// Check we have a shop param and set the option
+	if (shop) {
+		ShopifyApi.options.shop = shop;
+	} else {
+		handleError('Cannot detect Shopify shop');
 	}
 }
 

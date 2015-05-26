@@ -23,7 +23,6 @@ ShopifyApi.init({
     appUrl: 		'https://yourAppUrl.com',
     apiKey: 		'App API Key...',
     scopes: 		'Shopify API scopes', 		// https://docs.shopify.com/api/authentication/oauth#scopes
-    shopOverride: 	'shop-name.myshopify.com' 	// See 'shopOverride Option' section below (default is false)
 ```
 
 #### Server Init
@@ -32,14 +31,8 @@ ShopifyApi.init({
 ShopifyApi.init({
     apiKey: 	'App API Key...',
     secret: 	'App Secret...',
-    shopOverride: 'shop-name.myshopify.com' // See 'shopOverride Option' section below (default is false)
 });
 ```
-
-#### shopOverride Option
-This override option is useful during app development when developing locally, outside of Shopify admin.
-Passing a shopify shop url into this option will force the app to use this shop for the API and the app won't look for a shop parameter in the url from Shopify. 
-Don't forget to remove this override in production!
 
 ## App Authenication / Login
 This package allows your embedded app to login in your shop admin into your app using Shopify OAuth authentication.

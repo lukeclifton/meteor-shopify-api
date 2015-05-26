@@ -3,7 +3,7 @@ ShopifyApi = {
     options: {
         apiKey: '',
         secret: '',
-        shopOverride: false,
+        shop: '',
     }
 };
 
@@ -112,26 +112,28 @@ Meteor.methods({
 
     'shopify/user': function() {
 
-        // Use the shop user override if the option is set
-        if (ShopifyApi.options.shopOverride != false) {
-            var shop = ShopifyApi.options.shopOverride;
+        // If shop option has been manually set in options then use this shop
+        if (ShopifyApi.options.shop != '') {
+            var shop = ShopifyApi.options.shop;
             var selector = { 'services.shopify.shop': shop };
+
+        // Otherwise get shop based on currently logged in user
         } else {
             // Get the currently logged in user
             var currentUserId = Meteor.userId();
             var selector = { _id: currentUserId };
         }
-
+        
         // Get all user data
         var user = Meteor.users.findOne(selector);
 
-        if (user) {
+        if (user.services.shopify) {
             return {
                 shop: user.services.shopify.shop,
                 token: user.services.shopify.accessToken
             }
         } else {
-            throw new Error('Shopify app: No shopify user set');
+            throw new Meteor.Error('Shopify app: No shopify user could be found');
         }
     },
 
