@@ -1,5 +1,5 @@
 Package.describe({
-	name: 'cliffers:shopify-api-local',
+	name: 'cliffers:shopify-api',
 	summary: 'Package for the Shopify API. Also handles OAuth authentication for embedded shopify apps',
 	version: '0.3.0',
 	git: 'https://github.com/lukeclifton/shopify-api-meteor'
