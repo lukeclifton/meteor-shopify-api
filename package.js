@@ -28,7 +28,6 @@ Package.onUse(function(api) {
 		'jparker:crypto-hmac@0.1.0'
 	], 'server');
 
-	api.addFiles('views/seaa-error.html', 'client');
 	api.addFiles('server.js', 'server');
 	api.addFiles('client.js', 'client');
 	api.addFiles('router.js', 'client');
