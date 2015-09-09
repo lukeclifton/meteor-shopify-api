@@ -35,7 +35,7 @@ Router.route('shopifyAuthenticate', {
         // Validate signature to ensure its from Shopify
         Meteor.call('shopify/validateSignature', this.params.query, function(error, result) {
 
-            // Successfull signature validation
+            // Successful signature validation
             if (result === true) {
 
                 console.log('Shopify app: Shopify signature validated')
@@ -45,12 +45,12 @@ Router.route('shopifyAuthenticate', {
                 // Generate permanent access token
                 Meteor.call('shopify/oauth/generateAccessToken', code, shop, function(error, result) {
                     
-                    // Generated access token successully
+                    // Generated access token successfully
                     if (result) {
         
                         console.log('Shopify app: Permanent access token generated');
         
-                    	// Shopify OAuth authentication process complete & successfull, so now log the user in
+                    	// Shopify OAuth authentication process complete & successful, so now log the user in
                     	loginWithShopify(result.userId);
                     
                     // Error generating access token
@@ -65,18 +65,4 @@ Router.route('shopifyAuthenticate', {
             }
         });
 	}
-});
-
-/* --------------------------------------
- * Error route
- * ------------------------------------*/
-Router.route('seaa-error', {
-    data: function() {
-        return {
-            errorMesg: Session.get('seaa-error-mesg'),
-        }
-    },
-    action: function() {
-        this.render();
-    }
 });

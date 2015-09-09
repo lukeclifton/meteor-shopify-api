@@ -5,7 +5,7 @@ ShopifyApi = {
         shop:   '',
         apiKey: '',
         scopes: '',
-        authSuccessRoute: '',
+        authSuccessRoute: ''
     }
 };
 
@@ -15,6 +15,8 @@ ShopifyApi = {
  * This function sets up the shopify api options and detects the shopify shop to use the app
  * ------------------------------------*/
 ShopifyApi.init = function(options) {
+
+	check(options, Object);
 
 	// Set passed options
 	_.extend(ShopifyApi.options, options);
@@ -31,15 +33,17 @@ ShopifyApi.init = function(options) {
 	} else {
 		handleError('Cannot detect Shopify shop');
 	}
-}
+};
 
 /* --------------------------------------
  * Shopify app authorization procedure function
  * --------------------------------------
  * Kicks off the shopify app authenication process for logging in
- * We re-authenticate our app everytime we login as reconmended by shopify
+ * We re-authenticate our app everytime we login as recommended by shopify
  * ------------------------------------*/
 ShopifyApi.authorizeApp = function(params) {
+
+	check(params, Object);
 
 	console.log('Shopify app: Authorising app...');
 
@@ -49,46 +53,32 @@ ShopifyApi.authorizeApp = function(params) {
 		handleError('Shopify parameters missing, cannot authenticate');
 	}
 
-	// Validate signature to ensure its from Shopify
-	Meteor.call('shopify/validateSignature', params, function(error, result) {
+	// Get shop name from shop param
+	var shopName = params.shop.replace('.myshopify.com', '');
 
-		// Successfull validation
-		if (result === true) {
+	var url = 'https://' + shopName + '.myshopify.com/admin/oauth/authorize?' +
+		'client_id=' + ShopifyApi.options.apiKey +
+		'&scope=' + ShopifyApi.options.scopes +
+		'&redirect_uri=' + ShopifyApi.options.appUrl + '/shopify/authenticate';
 
-			console.log('Shopify app: Shopify signature validated');
+	console.log('Shopify app: Sending authorisation request to Shopify...');
 
-			// Get shop name from shop param
-			var shopName = params.shop.replace('.myshopify.com', '');
-		
-			var url = 'https://' + shopName + '.myshopify.com/admin/oauth/authorize?' +
-			          'client_id=' + ShopifyApi.options.apiKey +
-			          '&scope=' + ShopifyApi.options.scopes +
-			          '&redirect_uri=' + ShopifyApi.options.appUrl + '/shopify/authenticate';
-			
-			console.log('Shopify app: Sending authorisation request to Shopify...');
+	// Do the redirect to shopify for authorisation
+	window.location.replace(url);
+};
 
-			// Do the redirect to shopify for authorisation
-			window.location.replace(url);
-
-		// Validation error
-		} else {
-			// Show error page
-			handleError('Cannot validate Shopify OAuth signature. There maybe a security issue.');
-		}
-	});
-}
 
 /* --------------------------------------
  * Login check function
  * --------------------------------------
  * Checks to see if a user is logged in, if not then run the shopfiy app OAuth process
  * ------------------------------------*/
-ShopifyApi.loginCheck = function(params) {
+ShopifyApi.loginCheck = function() {
 	if (!Meteor.userId()) {
 		console.log('Shopify app: Not logged in, need to run OAuth process and authorize');
 		ShopifyApi.authorizeApp(Router.current().params.query);
 	}
-}
+};
 
 /* --------------------------------------
  * Login with Shopify function
@@ -97,12 +87,14 @@ ShopifyApi.loginCheck = function(params) {
  * ------------------------------------*/
 loginWithShopify = function(userId) {
 
+	check(userId, String);
+
 	console.log('Shopify app: OAuth process completed. Logging in...');
 
 	// create a login request with shopify: true, so our custom loginHandler can handle this request
 	var loginRequest = {
 		shopify: true, 
-		userId: userId,
+		userId: userId
 	};
 
 	Accounts.callLoginMethod({
@@ -129,10 +121,8 @@ loginWithShopify = function(userId) {
  * ------------------------------------*/
 handleError = function(errorMesg) {
 	console.error('Shopify app: ' + errorMesg);
-	Session.set('seaa-error-mesg', errorMesg);
-	Router.go('seaa-error');
 	throw new Meteor.Error(errorMesg);
-}
+};
 
 /* --------------------------------------
  * URL params helper function

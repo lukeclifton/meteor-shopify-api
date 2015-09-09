@@ -1,7 +1,7 @@
 Package.describe({
 	name: 'cliffers:shopify-api',
 	summary: 'Package for the Shopify API. Also handles OAuth authentication for embedded shopify apps',
-	version: '0.3.0',
+	version: '0.4.0',
 	git: 'https://github.com/lukeclifton/shopify-api-meteor'
 });
 
@@ -13,19 +13,19 @@ Package.onUse(function(api) {
 		'mongo',
 		'iron:router@1.0.7',
 		'accounts-base',
-		'service-configuration',
+		'service-configuration'
 	], ['client', 'server']);
 
 	// Client only
 	api.use([
-		'templating',
+		'templating'
 	], 'client');
 
 	// Server only
 	api.use([
 		'http',
 		'jparker:crypto-sha256@0.1.1',
-		'jparker:crypto-hmac@0.1.0',
+		'jparker:crypto-hmac@0.1.0'
 	], 'server');
 
 	api.addFiles('views/seaa-error.html', 'client');

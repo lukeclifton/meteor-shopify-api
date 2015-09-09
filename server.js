@@ -3,7 +3,7 @@ ShopifyApi = {
     options: {
         apiKey: '',
         secret: '',
-        shop: '',
+        shop: ''
     }
 };
 
@@ -14,9 +14,11 @@ ShopifyApi = {
  * ------------------------------------*/
 ShopifyApi.init = function(options) {
 
+    check(options, Object);
+
     // Set passed options
     ShopifyApi.options = options;
-}
+};
 
 Meteor.startup(function() {
 
@@ -48,6 +50,8 @@ Meteor.methods({
     * http://docs.shopify.com/api/authentication/oauth
     * ------------------------------------*/
     'shopify/validateSignature': function(params) {
+
+        check(params, Object);
     
         var hmac = params.hmac;
     
@@ -66,6 +70,9 @@ Meteor.methods({
     },
 
     'shopify/oauth/generateAccessToken': function(code, shop) {
+
+        check(code, String);
+        check(code, String);
     
         if (!shop || !code) {
             throw new Meteor.Error('400', 'Shopify app: Cannot generate Shopify access token: shop OR code parameters missing');
@@ -83,7 +90,7 @@ Meteor.methods({
             code: code 
         };
             
-        // Request permanet access token from shopfiy
+        // Request permanent access token from shopfiy
         var result = HTTP.post(url, { params: data }); 
         
         if (result.statusCode === 200) {
@@ -95,6 +102,9 @@ Meteor.methods({
     
     'shopify/updateOrCreateUser': function(shop, accessToken) {
 
+        check(shop, String);
+        check(accessToken, String);
+
         // Get shop name from shop
         var shopName = shop.replace('.myshopify.com', '');
 
@@ -102,8 +112,8 @@ Meteor.methods({
             id: shop,
             accessToken: accessToken,
             shopName: shopName,
-            shop: shop,
-        }
+            shop: shop
+        };
 
         // Accounts.updateOrCreateUserFromExternalService is a function located in accounts-base/accounts_server.js
         // This function updates or creates a user with the external service (shopify) authentication data specified above.
@@ -157,14 +167,14 @@ Meteor.methods({
 
         var headers = {
             "X-Shopify-Access-Token": token, 
-            "content-type": "application/json",
-        }
+            "content-type": "application/json"
+        };
             
         var options = {
             headers: headers,
             content: content,
-            params: params,
-        }
+            params: params
+        };
 
         try {
             var result = HTTP.call(method, apiUrl, options);
@@ -174,7 +184,7 @@ Meteor.methods({
             // Got a network error, time-out or HTTP error in the 400 or 500 range.
             return error;
         }
-    },
+    }
 });
 
 // Register login handler for shopify embedded app login
@@ -184,7 +194,7 @@ Accounts.registerLoginHandler(function(loginRequest) {
         return undefined; // if the login request is not for shopify, don't handle
 
     return {
-        userId: loginRequest.userId,
+        userId: loginRequest.userId
     };
 });
 
@@ -195,4 +205,4 @@ var serializeObject = function(object) {
             string.push(encodeURIComponent(param) + "=" + encodeURIComponent(object[param]));
         }
     return string.join("&");
-}
+};
