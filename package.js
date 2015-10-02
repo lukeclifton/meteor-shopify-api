@@ -11,6 +11,8 @@ Package.onUse(function(api) {
 	// Both client and server
 	api.use([
 		'mongo',
+		'check',
+		'underscore',
 		'iron:router@1.0.7',
 		'accounts-base',
 		'service-configuration'
