@@ -12,6 +12,7 @@ Package.onUse(function(api) {
 	api.use([
 		'mongo',
 		'check',
+		'underscore',
 		'iron:router@1.0.7',
 		'accounts-base',
 		'service-configuration'
