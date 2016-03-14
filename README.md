@@ -1,3 +1,11 @@
+# DEPRECIATED - Do not use!
+THIS METEOR SHOPIFY PACKAGE IS OUT OF DATE AND SHOULD NOT BE USED
+
+I AM CURRENTLY WORKING ON A NEW METEOR SHOPIFY PACKAGE, WHICH IS COMING SOON...
+
+-------------------------------------------------------
+
+
 ### Meteor JS Package
 # shopify-api
 
